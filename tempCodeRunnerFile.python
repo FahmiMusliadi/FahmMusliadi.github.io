@@ -1,0 +1,33 @@
+import pandas as pd
+from sklearn.datasets import load_iris
+
+# Muat dataset iris
+iris = load_iris()
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+df['target'] = iris.target
+
+# Identifikasi jumlah data
+print("Jumlah data:", df.shape[0])
+
+# Identifikasi tipe data
+print("\nTipe data:")
+print(df.dtypes)
+
+# Identifikasi nilai yang hilang
+print("\nJumlah nilai yang hilang:")
+print(df.isnull().sum())
+
+# Identifikasi outlier (menggunakan IQR)
+for column in df.columns[:-1]:  # Loop melalui fitur numerik
+  Q1 = df[column].quantile(0.25)
+  Q3 = df[column].quantile(0.75)
+  IQR = Q3 - Q1
+  lower_bound = Q1 - 1.5 * IQR
+  upper_bound = Q3 + 1.5 * IQR
+  outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+  print(f"\nOutlier pada kolom {column}:")
+  print(outliers)
+
+# Deskripsi statistik data
+print("\nDeskripsi statistik:")
+print(df.describe())
